@@ -43,7 +43,7 @@ const uploadImages = async (req, res) => {
       });
 
     } catch (err) {
-      //console.error("Error compressing", file.originalname, err);
+      console.error("Error compressing", file.originalname, err);
     }
   }
 
