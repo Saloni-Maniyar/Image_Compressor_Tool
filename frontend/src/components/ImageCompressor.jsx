@@ -130,12 +130,12 @@ function ImageCompressor() {
         />
       </div>
 
-      {/* <div style={{ marginTop: "15px" }}>
+       <div style={{ marginTop: "15px" }}>
         <button onClick={handleUpload}>Compress Images</button>{" "}
         <button onClick={handleClear} style={{ marginLeft: "10px" }}>
           Clear
         </button>
-      </div> */}
+      </div> 
 
       {/* ✅ Modal for results 
       {showModal && (
