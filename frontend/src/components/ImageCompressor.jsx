@@ -1,12 +1,16 @@
 
 
+
+
+
+
+
 import React, { useState, useRef } from "react";
 import axios from "axios";
 import "../App.css";
 
 function ImageCompressor() {
-  //Smruti- UserStory2 (State for Managing Image Files)
-  const [files, setFiles] = useState([]); // sk
+  const [files, setFiles] = useState([]);
   const [quality, setQuality] = useState(60);
   const [results, setResults] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -30,7 +34,7 @@ function ImageCompressor() {
 
     setFiles([...files, ...validImages]);
   };
-  // Smruti-(user story 1 , 2 File Handling Logic, Logic for file selection )
+
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
     const validImages = selectedFiles.filter((file) =>
@@ -42,9 +46,8 @@ function ImageCompressor() {
     }
 
     setFiles([...files, ...validImages]);
-  }; //sk
+  };
 
-  // - (user story1 File Upload Function)
   const handleUpload = async () => {
     if (files.length === 0) {
       showAlert("Please select at least one image file.");
@@ -63,7 +66,7 @@ function ImageCompressor() {
       console.error("Error uploading images:", err);
       showAlert("Failed to upload images. Please try again.");
     }
-  };//sk
+  };
 
   const handleClear = () => {
     setFiles([]);
@@ -79,7 +82,6 @@ function ImageCompressor() {
     <div className="container">
       <h1>🖼️ Image Compressor</h1>
 
-      {/* smruti- task 1 ( File Input Field (Image Selection) <div> to </div> ) */}
       <div
         className="drop-area"
         onDrop={handleDrop}
@@ -93,8 +95,8 @@ function ImageCompressor() {
           onChange={handleFileChange}
           ref={fileInputRef}
         />
-      </div>{/*sk */}
-      {/*Smruti- UserStory2 (Logic for Displaying Image Previews) */}
+      </div>
+
       {files.length > 0 && (
         <div style={{ marginTop: "20px" }}>
           <h3>Selected Images Preview</h3>
@@ -117,7 +119,7 @@ function ImageCompressor() {
             ))}
           </div>
         </div>
-      )}{/*SK*/}
+      )}
 
       <div className="quality-input" style={{ marginTop: "15px" }}>
         <label>Compression (1–100): </label>
@@ -137,7 +139,7 @@ function ImageCompressor() {
         </button>
       </div>
 
-      {/* ✅ Modal for results  */}
+      {/* ✅ Modal for results */}
       {showModal && (
         <div className="modal">
           <div className="modal-content">
