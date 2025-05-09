@@ -82,7 +82,7 @@ npm run dev
 ![Issues Assigned](Screenshots/IssuesAssigned.png)
 
 ### 🧾 Final Sprint Document  
-![Final Sprint](Screenshots/FinalSprintDocument.png)
+![Final Sprint](Screenshots/FinalSprintDone.png)
 
 ### 📈 Burndown Chart  
 ![Burndown](Screenshots/BurnDownChart.png)
