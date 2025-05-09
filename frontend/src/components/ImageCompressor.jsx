@@ -1,10 +1,3 @@
-
-
-
-
-
-
-
 import React, { useState, useRef } from "react";
 import axios from "axios";
 import "../App.css";
@@ -14,7 +7,7 @@ function ImageCompressor() {
   const [quality, setQuality] = useState(60);
   const [results, setResults] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [previewImage, setPreviewImage] = useState(null); // ✅ State to hold image preview
+  const [previewImage, setPreviewImage] = useState(null);
   const fileInputRef = useRef(null);
 
   const showAlert = (message) => {
@@ -32,7 +25,7 @@ function ImageCompressor() {
       showAlert("Only image files are allowed.");
     }
 
-    setFiles([...files, ...validImages]);
+    setFiles((prev) => [...prev, ...validImages]);
   };
 
   const handleFileChange = (e) => {
@@ -45,7 +38,13 @@ function ImageCompressor() {
       showAlert("Only image files are allowed.");
     }
 
-    setFiles([...files, ...validImages]);
+    setFiles((prev) => [...prev, ...validImages]);
+  };
+
+  const handleRemoveImage = (index) => {
+    const updatedFiles = [...files];
+    updatedFiles.splice(index, 1);
+    setFiles(updatedFiles);
   };
 
   const handleUpload = async () => {
@@ -59,9 +58,18 @@ function ImageCompressor() {
     formData.append("quality", quality);
 
     try {
-      const res = await axios.post("http://localhost:5000/api/image/upload", formData);
-      setResults(res.data);
-      setShowModal(true);
+      const res = await axios.post(
+        "http://localhost:5000/api/image/upload",
+        formData
+      );
+      console.log("Server response:", res.data);
+
+      if (res.data.success) {
+        setResults(res.data.results);
+        setShowModal(true);
+      } else {
+        showAlert(res.data.message || "Failed to compress images.");
+      }
     } catch (err) {
       console.error("Error uploading images:", err);
       showAlert("Failed to upload images. Please try again.");
@@ -109,12 +117,46 @@ function ImageCompressor() {
             }}
           >
             {files.map((file, i) => (
-              <div key={i} className="preview-container">
+              <div
+                key={i}
+                className="preview-container"
+                style={{
+                  position: "relative",
+                  width: "150px",
+                  height: "150px",
+                }}
+              >
                 <img
                   src={URL.createObjectURL(file)}
                   alt={`preview-${i}`}
                   className="preview-image"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    borderRadius: "8px",
+                  }}
                 />
+                <span
+                  onClick={() => handleRemoveImage(i)}
+                  style={{
+                    position: "absolute",
+                    top: "-8px",
+                    right: "-8px",
+                    background: "red",
+                    color: "white",
+                    borderRadius: "50%",
+                    width: "24px",
+                    height: "24px",
+                    textAlign: "center",
+                    lineHeight: "24px",
+                    cursor: "pointer",
+                    fontWeight: "bold",
+                    boxShadow: "0 0 5px rgba(0,0,0,0.5)",
+                  }}
+                >
+                  ❌
+                </span>
               </div>
             ))}
           </div>
@@ -139,7 +181,6 @@ function ImageCompressor() {
         </button>
       </div>
 
-      {/* ✅ Modal for results */}
       {showModal && (
         <div className="modal">
           <div className="modal-content">
@@ -148,14 +189,27 @@ function ImageCompressor() {
               {results.map((res, i) => (
                 <li key={i} style={{ marginBottom: "20px" }}>
                   <strong>{res.originalName}</strong>
-                  <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap", marginTop: "10px" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-around",
+                      flexWrap: "wrap",
+                      marginTop: "10px",
+                    }}
+                  >
                     <div>
                       <p>Original ({res.originalSizeKB}KB)</p>
                       <img
                         src={URL.createObjectURL(files[i])}
                         alt="original"
-                        style={{ width: "150px", borderRadius: "8px", cursor: "pointer" }}
-                        onClick={() => setPreviewImage(URL.createObjectURL(files[i]))}
+                        style={{
+                          width: "150px",
+                          borderRadius: "8px",
+                          cursor: "pointer",
+                        }}
+                        onClick={() =>
+                          setPreviewImage(URL.createObjectURL(files[i]))
+                        }
                       />
                     </div>
                     <div>
@@ -163,7 +217,11 @@ function ImageCompressor() {
                       <img
                         src={res.downloadUrl}
                         alt="compressed"
-                        style={{ width: "150px", borderRadius: "8px", cursor: "pointer" }}
+                        style={{
+                          width: "150px",
+                          borderRadius: "8px",
+                          cursor: "pointer",
+                        }}
                         onClick={() => setPreviewImage(res.downloadUrl)}
                       />
                     </div>
@@ -200,11 +258,18 @@ function ImageCompressor() {
         </div>
       )}
 
-      {/* ✅ Zoomed image preview modal */}
       {previewImage && (
-        <div className="preview-modal" onClick={() => setPreviewImage(null)}>
+        <div
+          className="preview-modal"
+          onClick={() => setPreviewImage(null)}
+        >
           <div className="preview-image-wrapper">
-            <span className="close-btn" onClick={() => setPreviewImage(null)}>❌</span>
+            <span
+              className="close-btn"
+              onClick={() => setPreviewImage(null)}
+            >
+              ❌
+            </span>
             <img src={previewImage} alt="Full Preview" />
           </div>
         </div>
